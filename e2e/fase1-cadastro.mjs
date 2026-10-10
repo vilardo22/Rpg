@@ -1,0 +1,45 @@
+import { B, OUT, launchBrowser, ok } from "./helpers.mjs";
+const cpf = (b) => { const d=(a)=>((a.reduce((t,x,i)=>t+x*(a.length+1-i),0)*10)%11)%10; const n=b.split("").map(Number); const f=d(n); return b+f+d([...n,f]); };
+const browser = await launchBrowser();
+const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+const email = `e2e-${Date.now()}@demo.quadro.dev`;
+
+async function fill(o) {
+  await page.goto(B + "/cadastro", { waitUntil: "load" });
+  await page.getByRole("button", { name: "Criar conta" }).waitFor();
+  await page.waitForTimeout(500);
+  await page.getByLabel("Nome de exibição", { exact: true }).fill("Teste E2E");
+  await page.getByLabel("E-mail", { exact: true }).fill(o.email ?? email);
+  await page.getByLabel("Senha", { exact: true }).fill("senhaTeste123");
+  await page.getByLabel("CPF", { exact: true }).pressSequentially(o.cpf);
+  await page.getByLabel("Data de nascimento", { exact: true }).fill(o.birth ?? "1995-05-20");
+  await page.getByRole("checkbox").check();
+  await page.getByRole("button", { name: "Criar conta" }).click();
+}
+await fill({ cpf: "11111111111" });
+ok(await page.getByText("CPF inválido").isVisible(), "CPF inválido mostra erro");
+ok((await page.getByLabel("CPF", { exact: true }).inputValue()) === "111.111.111-11", "máscara do CPF aplicada");
+await fill({ cpf: "52998224725", birth: "2012-01-01" });
+ok(await page.getByText("O Quadro de Missões é só para maiores de 18 anos.").isVisible(), "menor de 18 bloqueado");
+await fill({ cpf: cpf("100200302") });
+await page.getByText("Já existe uma conta com este CPF").waitFor({ timeout: 10000 }).then(() => ok(true, "CPF repetido barrado pelo servidor"), () => ok(false, "CPF repetido barrado pelo servidor"));
+await fill({ cpf: cpf(String(Date.now()).slice(-9)) });
+await page.waitForURL((u) => u.pathname === "/missoes", { timeout: 15000 }).then(() => ok(true, "cadastro válido entra logado em /missoes"), () => ok(false, "cadastro válido -> " + page.url()));
+await page.screenshot({ path: OUT + "/e2e-missoes.png" });
+await page.getByRole("button", { name: "Sair" }).click();
+await page.waitForURL(B + "/");
+ok(true, "Sair volta para a home");
+await page.goto(B + "/entrar?next=/locais", { waitUntil: "load" });
+await page.getByRole("button", { name: "Entrar" }).waitFor();
+await page.waitForTimeout(500);
+await page.getByLabel("E-mail", { exact: true }).fill(email);
+await page.getByLabel("Senha", { exact: true }).fill("errada123");
+await page.getByRole("button", { name: "Entrar" }).click();
+await page.getByText("E-mail ou senha incorretos").waitFor({ timeout: 10000 }).then(() => ok(true, "senha errada mostra erro"), () => ok(false, "senha errada"));
+await page.getByLabel("Senha", { exact: true }).fill("senhaTeste123");
+await page.getByRole("button", { name: "Entrar" }).click();
+await page.waitForURL((u) => u.pathname === "/locais", { timeout: 15000 }).then(() => ok(true, "login respeita ?next=/locais"), () => ok(false, "login next -> " + page.url()));
+await page.goto(B + "/cadastro");
+ok(page.url().endsWith("/missoes"), "logado em /cadastro vai para /missoes (" + page.url() + ")");
+console.log("EMAIL " + email);
+await browser.close();

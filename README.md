@@ -40,6 +40,7 @@ No painel do Supabase, abra **Project Settings > API Keys** e copie para o `.env
 | `npm run build` | Build de produção |
 | `npm run icons` | Regenera os ícones PWA a partir de `src/app/icon.svg` |
 | `npm run seed` | Recria os dados de demonstração no Supabase (usa a secret key) |
+| `npm run e2e` | Testes de ponta a ponta no navegador (veja [`e2e/README.md`](e2e/README.md)) |
 
 ## Estrutura
 
@@ -62,6 +63,7 @@ src/
 supabase/migrations/  schema, RLS e funções
 supabase/tests/       testes do banco (PGlite)
 scripts/              utilitários (ícones, seed)
+e2e/                  testes de ponta a ponta (Playwright + Edge)
 ```
 
 ## Banco de dados
