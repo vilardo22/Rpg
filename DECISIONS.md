@@ -20,3 +20,18 @@ Escolhas feitas onde o PRD era ambíguo ou silencioso. Aprovadas em 09/10/2026, 
 - **Fonte dos títulos: Fraunces** (Fase 0). O guia sugeria Cambria, mas ela não existe em Android. Fraunces é serifada, tem personalidade e vem pelo `next/font` (PRD seção 7).
 - **Só tema claro** (Fase 0). A identidade (pergaminho + roxo) é clara; não há modo escuro no MVP.
 - **Botões e campos com 44px** (Fase 0). Os tamanhos padrão do shadcn (32px) foram aumentados para cumprir a área de toque mínima.
+
+## Fase 1 — banco e cadastro
+
+- **Conta criada já confirmada.** O cadastro usa `auth.admin.createUser` com `email_confirm: true`, então não depende da configuração "Confirm email" do Supabase. No MVP o e-mail não é verificado.
+- **Termos aceitos ficam registrados** em `private_profiles.terms_accepted_at` (coluna a mais que o PRD, para a LGPD).
+- **XP e níveis em tabelas** (`reputation_rules` e `levels`): é o "lugar único" do RF-05, ajustável com um UPDATE.
+- **Permissões por coluna.** Além do RLS, o usuário só pode editar colunas específicas: não muda `role`, CPF, nascimento, nem o `status` da missão (que só muda por `cancel_session`/`complete_session`).
+- **Concluir só depois do horário de início**, para ninguém "farmar" XP com missões falsas. O seed cria uma missão em andamento para a demonstração.
+- **Mestre pode cancelar a missão inteira** (`cancel_session`, avisa os participantes) e remover um aprovado (`respond_join` com recusa). Apagar missão é permitido enquanto não estiver concluída.
+- **Pedidos:** recusado não pode pedir de novo na mesma missão; quem cancelou pode. Ao concluir, pedidos ainda pendentes viram recusados.
+- **Participantes aprovados são visíveis** para todos os logados (o detalhe da missão mostra quem vai). Pedidos pendentes, só para o jogador e o mestre.
+- **Denúncias:** uma denúncia aberta por pessoa para o mesmo alvo; o selo "Em análise" conta denunciantes diferentes. Denúncia de missão confirmada penaliza o mestre dela.
+- **Rejeitar local:** sem missões, é apagado; com missões, só deixa de ser verificado.
+- **Testes do banco com PGlite**, um Postgres que roda dentro do Node, já que não há Docker. Um arquivo imita o Supabase (`supabase/tests/supabase-stub.sql`).
+- **Node 22.18+**, porque o seed é TypeScript executado direto pelo Node.

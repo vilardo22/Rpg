@@ -10,7 +10,9 @@ App web (PWA) que conecta jogadores de RPG, board games e TCG em Curitiba. Proje
 ## Stack
 Next.js 16 (App Router, `src/`, Cache Components desligado) + TypeScript estrito, Tailwind v4 + shadcn/ui (radix), Supabase (Postgres, Auth, RLS, funções `security definer`), Leaflet + OpenStreetMap, react-hook-form + zod, Vitest, deploy na Vercel.
 - No Next 16, `middleware.ts` virou `proxy.ts` (função `proxy`). Consulte `node_modules/next/dist/docs/` quando houver dúvida de API.
-- Clientes Supabase em `src/lib/supabase/` (`client.ts` navegador, `server.ts` servidor).
+- Clientes Supabase em `src/lib/supabase/` (`client.ts` navegador, `server.ts` servidor, `admin.ts` secret key, só servidor).
+- Banco: `supabase/migrations/`. Nunca edite uma migration já aplicada; crie um arquivo novo. A migration de RLS revoga os privilégios padrão: **tabela nova precisa de GRANT explícito** para `authenticated`.
+- Testes do banco em `supabase/tests/` (PGlite, sem Docker): toda regra nova de RLS/RPC ganha teste lá.
 
 ## Regras
 - Idioma da interface e dos textos: português do Brasil. Identificadores de código e tabelas em inglês.

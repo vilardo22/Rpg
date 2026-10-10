@@ -10,7 +10,7 @@ Next.js 16 (App Router) + TypeScript · Tailwind CSS v4 + shadcn/ui · Supabase 
 
 ## Como rodar
 
-Pré-requisitos: **Node.js 20+** e uma conta gratuita no [Supabase](https://supabase.com).
+Pré-requisitos: **Node.js 22.18+** (recomendado 24) e uma conta gratuita no [Supabase](https://supabase.com).
 
 ```bash
 npm install
@@ -28,7 +28,6 @@ No painel do Supabase, abra **Project Settings > API Keys** e copie para o `.env
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | API Keys > Publishable key (`sb_publishable_...`) | sim (protegida por RLS) |
 | `SUPABASE_SECRET_KEY` | API Keys > Secret key (`sb_secret_...`) | **não**: só servidor, nunca commitar nem colar em chat |
 
-> Até a Fase 1 a home e as telas provisórias funcionam sem essas variáveis.
 
 ## Scripts
 
@@ -40,6 +39,7 @@ No painel do Supabase, abra **Project Settings > API Keys** e copie para o `.env
 | `npm test` | Testes unitários (Vitest) |
 | `npm run build` | Build de produção |
 | `npm run icons` | Regenera os ícones PWA a partir de `src/app/icon.svg` |
+| `npm run seed` | Recria os dados de demonstração no Supabase (usa a secret key) |
 
 ## Estrutura
 
@@ -47,6 +47,7 @@ No painel do Supabase, abra **Project Settings > API Keys** e copie para o `.env
 src/
   app/
     page.tsx          home pública
+    (auth)/           cadastro, login e as Server Actions de autenticação
     (app)/            telas logadas com cabeçalho + navegação inferior
     manifest.ts       manifesto PWA
   components/
@@ -55,10 +56,52 @@ src/
   lib/
     supabase/         clientes Supabase (navegador e servidor)
     env.ts            leitura das variáveis de ambiente
-supabase/migrations/  schema, RLS e funções (a partir da Fase 1)
+    cpf.ts, age.ts    validação de CPF (Módulo 11) e de 18+
+    validation/       schemas zod dos formulários
+  proxy.ts            protege as rotas logadas (o antigo middleware)
+supabase/migrations/  schema, RLS e funções
+supabase/tests/       testes do banco (PGlite)
 scripts/              utilitários (ícones, seed)
 ```
 
-## Banco de dados, seed e admin
+## Banco de dados
 
-A partir da Fase 1: instruções para aplicar as migrations, popular os dados de demonstração e criar o primeiro admin.
+O schema, as políticas de segurança (RLS) e as regras de negócio (vagas, XP, denúncias) ficam em `supabase/migrations/`, em 3 arquivos que devem ser aplicados **em ordem**:
+
+1. `20261010000100_schema.sql`: tipos, tabelas, restrições e a configuração de XP/níveis
+2. `20261010000200_functions.sql`: gatilhos e funções (RPC)
+3. `20261010000300_rls.sql`: permissões e políticas RLS
+
+**Como aplicar (SQL Editor):** no painel do Supabase, abra **SQL Editor > New query**, cole o conteúdo do arquivo 1 e clique em **Run**. Repita com os arquivos 2 e 3.
+
+> Alternativa pela linha de comando: `npx supabase login`, `npx supabase link --project-ref <ref>` e `npx supabase db push`.
+
+### Testes do banco
+
+`npm test` também roda `supabase/tests/`: os testes sobem um Postgres em memória ([PGlite](https://pglite.dev)), aplicam as mesmas migrations e conferem as regras (CPF, 18+, RLS, vagas, XP, denúncias). Não precisam de internet nem de Docker.
+
+### Ajustar XP e níveis
+
+Os pontos e os níveis ficam nas tabelas `reputation_rules` e `levels`. Exemplo, no SQL Editor:
+
+```sql
+update public.reputation_rules set points = 12 where kind = 'played';
+```
+
+## Dados de demonstração
+
+```bash
+npm run seed
+```
+
+Cria 1 admin e 5 jogadores fictícios (`<nome>@demo.quadro.dev`, senha `Missoes2026!`), o Joy Joy Café e locais de exemplo, missões futuras, pedidos pendentes, uma missão em andamento (para demonstrar a conclusão) e uma concluída com histórico de XP. Pode rodar de novo: apaga só o que o próprio seed criou.
+
+## Criar o primeiro admin
+
+Depois de criar sua conta pelo app, rode no SQL Editor (trocando o e-mail):
+
+```sql
+update public.profiles
+set role = 'admin'
+where id = (select id from auth.users where email = 'seu-email@exemplo.com');
+```

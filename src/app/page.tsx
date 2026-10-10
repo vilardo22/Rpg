@@ -37,7 +37,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             <Button asChild size="lg" className="bg-dourado text-roxo-escuro hover:bg-dourado/90">
-              <Link href="/missoes">Ver missões</Link>
+              <Link href="/cadastro">Criar conta</Link>
             </Button>
             <Button
               asChild
@@ -45,7 +45,7 @@ export default function Home() {
               variant="outline"
               className="border-pergaminho/60 bg-transparent text-pergaminho hover:bg-pergaminho/10 hover:text-pergaminho"
             >
-              <Link href="/locais">Ver locais</Link>
+              <Link href="/entrar">Já tenho conta</Link>
             </Button>
           </div>
         </div>

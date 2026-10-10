@@ -9,6 +9,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.{ts,tsx}"],
+    include: ["src/**/*.test.{ts,tsx}", "supabase/tests/**/*.test.ts"],
+    // Os testes de banco sobem um Postgres (PGlite) e aplicam as migrations: levam alguns segundos.
+    testTimeout: 30_000,
   },
 });
