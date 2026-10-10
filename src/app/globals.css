@@ -1,0 +1,108 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Identidade visual do Quadro de Missões (PRD, seção 7).
+ * Só existe tema claro: fundo pergaminho, primária roxo profundo, destaque dourado.
+ * As variáveis semânticas (--primary, --muted...) são as que os componentes shadcn usam;
+ * as cores de marca (bg-roxo, text-dourado...) ficam disponíveis como utilitários do Tailwind.
+ */
+:root {
+  --roxo: #2d1b4e;
+  --roxo-escuro: #1e1236;
+  --pergaminho: #f4e9d8;
+  --dourado: #d4a017;
+  --tinta: #2a2320;
+
+  --background: var(--pergaminho);
+  --foreground: var(--tinta);
+  --card: #fbf5ea;
+  --card-foreground: var(--tinta);
+  --popover: #fbf5ea;
+  --popover-foreground: var(--tinta);
+  --primary: var(--roxo);
+  --primary-foreground: var(--pergaminho);
+  --secondary: #e9dcc4;
+  --secondary-foreground: var(--tinta);
+  --muted: #e9dcc4;
+  --muted-foreground: #5c5048;
+  --accent: var(--dourado);
+  --accent-foreground: var(--roxo-escuro);
+  --destructive: #b42318;
+  --border: #d9c8aa;
+  --input: #cbb795;
+  /* Anel de foco em roxo: o dourado não tem contraste suficiente sobre o pergaminho. */
+  --ring: var(--roxo);
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --color-roxo: var(--roxo);
+  --color-roxo-escuro: var(--roxo-escuro);
+  --color-pergaminho: var(--pergaminho);
+  --color-dourado: var(--dourado);
+  --color-tinta: var(--tinta);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Fontes carregadas via next/font no layout raiz. */
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-title);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading text-roxo;
+  }
+  /* Foco de teclado sempre visível (acessibilidade, PRD seção 7). */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+/* Respeita quem pediu menos animação no sistema operacional. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
