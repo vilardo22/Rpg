@@ -87,8 +87,11 @@ export default async function Home() {
             <ul className="space-y-2">
               {missions.map((m) => (
                 <li key={m.id}>
-                  {/* Sem login, o link leva para "Entrar" e depois volta para a missão. */}
-                  <Link href={`/missoes/${m.id}`} className="block space-y-1.5 rounded-xl border bg-card p-4 hover:border-roxo/40">
+                  {/* Sem login, o link leva para "Entrar" e depois volta para a missão.
+                      prefetch={false}: para visitante o pré-carregamento sempre cai no
+                      redirecionamento do proxy, então só gastaria requisições (e em produção
+                      elas ficavam abertas no navegador). */}
+                  <Link href={`/missoes/${m.id}`} prefetch={false} className="block space-y-1.5 rounded-xl border bg-card p-4 hover:border-roxo/40">
                     <div className="flex flex-wrap gap-1.5">
                       <Badge className="bg-roxo text-pergaminho">{GAME_TYPE_LABEL[m.game_type]}</Badge>
                       {m.kind === "torneio" && <Badge className="bg-dourado text-roxo-escuro">Torneio</Badge>}
