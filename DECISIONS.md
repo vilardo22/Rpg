@@ -45,3 +45,13 @@ Escolhas feitas onde o PRD era ambíguo ou silencioso. Aprovadas em 09/10/2026, 
 - **Mestre pode remover um aprovado** (botão "Remover", com confirmação) e **cancelar a missão** inteira.
 - **Nomes dos níveis** ficam em `src/lib/missions/labels.ts` só para exibição; quem calcula o nível é o banco (tabela `levels`). Se renomear um nível no banco, atualize lá também.
 - **Links para o perfil** dos jogadores entram na Fase 4, junto com a página de perfil.
+
+## Fase 3 — locais e mapa
+
+- **Mapa só no navegador:** o Leaflet usa `window`, então é carregado com `dynamic(..., { ssr: false })` dentro de um Client Component (`venue-map-loader.tsx`).
+- **Pino em SVG próprio** (`L.divIcon`), nas cores do app. Evita o problema conhecido das imagens do pino padrão do Leaflet com bundlers.
+- **A lista repete o mapa:** o mapa não é acessível por teclado/leitor de tela de forma confortável, então todo local também aparece na lista abaixo dele.
+- **Lista e mapa filtram `is_verified = true`** além do RLS, para nem o admin ver pendentes misturados aos públicos. O local pendente só abre (com aviso) para quem sugeriu e para admins.
+- **"Como chegar"** abre a rota no Google Maps pelas coordenadas (funciona no app de mapas do celular).
+- **Sugerir local (RF-04) é P1:** fica para depois do P0 completo. Por enquanto o seed já cria um local pendente para demonstrar a aprovação no painel admin (Fase 5).
+- **Tiles do OpenStreetMap** direto do servidor público: grátis e sem chave, adequado ao volume do projeto (a política de uso do OSM pede atribuição, que aparece no canto do mapa).

@@ -106,3 +106,12 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Mapa (Leaflet): links e fonte do balão seguindo a identidade do app. */
+.leaflet-container {
+  font-family: var(--font-body), sans-serif;
+}
+/* Seletor mais específico porque o CSS do Leaflet carrega depois do nosso. */
+.leaflet-container .leaflet-popup a {
+  color: var(--roxo);
+}

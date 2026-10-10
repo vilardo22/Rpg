@@ -81,8 +81,14 @@ export default async function MissaoPage({ params }: PageProps<"/missoes/[id]">)
         <div>
           <dt className="sr-only">Onde</dt>
           <dd>
-            <MissionPlace mode={mission.mode} venueName={mission.venue?.name} />
-            {mission.venue && <p className="pl-5.5 text-muted-foreground">{mission.venue.address}</p>}
+            {mission.venue ? (
+              <Link href={`/locais/${mission.venue.id}`} className="underline-offset-4 hover:underline">
+                <MissionPlace mode={mission.mode} venueName={mission.venue.name} />
+                <span className="block pl-5.5 text-muted-foreground">{mission.venue.address}</span>
+              </Link>
+            ) : (
+              <MissionPlace mode={mission.mode} />
+            )}
           </dd>
         </div>
         <div>
