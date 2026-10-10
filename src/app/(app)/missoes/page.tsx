@@ -6,6 +6,7 @@ import { MissionCard } from "@/components/missions/mission-card";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
 import { filtersToQuery, hasActiveFilters, PAGE_SIZE, parseFilters } from "@/lib/missions/filters";
+import { levelName } from "@/lib/missions/labels";
 import { listMissions, listVerifiedVenues } from "@/lib/missions/queries";
 import { cn } from "@/lib/utils";
 import { MissionFiltersPanel } from "./mission-filters";
@@ -52,6 +53,16 @@ export default async function MissoesPage({ searchParams }: PageProps<"/missoes"
       </nav>
 
       <MissionFiltersPanel filters={filters} venues={venues} />
+
+      {/* Experiência declarada no perfil: só uma sugestão de filtro, nunca aplicada sozinha. */}
+      {user.experienceLevel && !filters.level && (
+        <Link
+          href={filtersToQuery(filters, { level: user.experienceLevel, page: 1 })}
+          className="flex min-h-11 items-center justify-center rounded-lg border border-dashed border-roxo/40 px-3 text-sm font-medium text-roxo"
+        >
+          Mostrar só missões para o meu nível ({user.experienceLevel} · {levelName(user.experienceLevel)})
+        </Link>
+      )}
 
       {missions.length === 0 ? (
         <EmptyState

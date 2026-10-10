@@ -75,3 +75,18 @@ export async function cancelParticipation(sessionId: string) {
 export async function cancelMission(sessionId: string) {
   return callRpc("cancel_session", { p_session_id: sessionId }, sessionId);
 }
+
+/**
+ * Mestre conclui a missão marcando quem compareceu (RF-03/RF-05). O XP de todos é
+ * calculado pela função complete_session no banco; aqui só enviamos a lista.
+ */
+export async function completeMission(sessionId: string, attendedUserIds: string[]) {
+  const result = await callRpc(
+    "complete_session",
+    { p_session_id: sessionId, p_attended_user_ids: attendedUserIds },
+    sessionId,
+  );
+  // O XP mudou: os perfis precisam mostrar os valores novos.
+  if (!result.error) revalidatePath("/perfil", "layout");
+  return result;
+}

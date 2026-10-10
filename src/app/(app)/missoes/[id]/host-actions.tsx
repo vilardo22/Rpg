@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ShieldAlert } from "lucide-react";
 import { LevelBadge } from "@/components/missions/mission-meta";
 import {
@@ -46,7 +47,9 @@ export function JoinRequests({
         return (
           <li key={r.user_id} className="space-y-3 rounded-lg border bg-card p-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-semibold text-roxo">{r.profile.display_name}</span>
+              <Link href={`/perfil/${r.user_id}`} className="font-semibold text-roxo underline underline-offset-4">
+                {r.profile.display_name}
+              </Link>
               <LevelBadge level={stats?.level} />
               {underReview.includes(r.user_id) && (
                 // RF-06: 3+ denúncias abertas. O mestre só vê o selo, não as denúncias.

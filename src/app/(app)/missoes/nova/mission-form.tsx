@@ -42,7 +42,36 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-export function MissionForm({ venues }: { venues: { id: string; name: string }[] }) {
+export const EMPTY_MISSION: MissionInput = {
+  title: "",
+  gameType: "rpg",
+  systemName: "",
+  kind: "mesa",
+  mode: "presencial",
+  date: "",
+  time: "19:00",
+  durationMinutes: "180",
+  maxPlayers: "5",
+  recurrence: "none",
+  minLevel: "1",
+  description: "",
+  isPaid: false,
+  price: "",
+  venueId: "",
+  onlineUrl: "",
+  contactType: "whatsapp",
+  contactPhone: "",
+  contactDiscord: "",
+};
+
+export function MissionForm({
+  venues,
+  defaultValues = EMPTY_MISSION,
+}: {
+  venues: { id: string; name: string }[];
+  /** Valores iniciais: vazio, ou copiados da missão anterior ("Criar a próxima"). */
+  defaultValues?: MissionInput;
+}) {
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string>();
   const {
@@ -54,27 +83,7 @@ export function MissionForm({ venues }: { venues: { id: string; name: string }[]
     formState: { errors },
   } = useForm<MissionInput, unknown, MissionData>({
     resolver: zodResolver(missionSchema),
-    defaultValues: {
-      title: "",
-      gameType: "rpg",
-      systemName: "",
-      kind: "mesa",
-      mode: "presencial",
-      date: "",
-      time: "19:00",
-      durationMinutes: "180",
-      maxPlayers: "5",
-      recurrence: "none",
-      minLevel: "1",
-      description: "",
-      isPaid: false,
-      price: "",
-      venueId: "",
-      onlineUrl: "",
-      contactType: "whatsapp",
-      contactPhone: "",
-      contactDiscord: "",
-    },
+    defaultValues,
   });
 
   // Campos que mostram/escondem outros campos.

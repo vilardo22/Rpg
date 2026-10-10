@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, Clock, Coins, ExternalLink, Gauge, MessageCircle, Video } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, Coins, ExternalLink, Gauge, MessageCircle, Repeat, Video } from "lucide-react";
 import { LevelBadge, MissionBadges, MissionPlace, SpotsLeft } from "@/components/missions/mission-meta";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
 import { formatDuration, formatPrice, formatSessionDateLong } from "@/lib/format";
 import { levelName } from "@/lib/missions/labels";
 import { getMission, getMyLevel, underReviewUsers } from "@/lib/missions/queries";
+import { Badge } from "@/components/ui/badge";
+import { CompleteMission } from "./complete-mission";
 import { CancelMissionButton, JoinRequests, RemoveParticipantButton } from "./host-actions";
 import { JoinActions } from "./join-actions";
 
@@ -53,9 +55,17 @@ export default async function MissaoPage({ params }: PageProps<"/missoes/[id]">)
         </p>
       )}
       {mission.status === "completed" && (
-        <p role="status" className="rounded-lg bg-secondary p-3 font-medium">
-          Missão concluída.
-        </p>
+        <div role="status" className="space-y-3 rounded-lg bg-secondary p-3">
+          <p className="font-medium">Missão concluída. O XP dos participantes já foi atualizado.</p>
+          {isHost && mission.recurrence === "weekly" && (
+            // Missão semanal: o mestre cria a próxima com um toque (dados copiados, data +7 dias).
+            <Button asChild className="w-full">
+              <Link href={`/missoes/nova?copiar=${mission.id}`}>
+                <Repeat aria-hidden /> Criar a próxima
+              </Link>
+            </Button>
+          )}
+        </div>
       )}
 
       <header className="space-y-2">
@@ -122,7 +132,9 @@ export default async function MissaoPage({ params }: PageProps<"/missoes/[id]">)
           <h2 id="mestre" className="text-sm font-medium text-muted-foreground">
             Mestre
           </h2>
-          <p className="font-semibold">{mission.host.display_name}</p>
+          <Link href={`/perfil/${mission.host.id}`} className="font-semibold text-roxo underline-offset-4 hover:underline">
+            {mission.host.display_name}
+          </Link>
         </div>
         <LevelBadge level={mission.host.player_stats?.level} />
       </section>
@@ -176,6 +188,14 @@ export default async function MissaoPage({ params }: PageProps<"/missoes/[id]">)
           )}
         </section>
       )}
+      {isHost && isOpen && hasStarted && (
+        <CompleteMission
+          sessionId={mission.id}
+          isTournament={mission.kind === "torneio"}
+          players={approved.map((p) => ({ userId: p.user_id, name: p.profile.display_name }))}
+        />
+      )}
+
       {!contacts && !isHost && isOpen && (
         <p className="text-sm text-muted-foreground">
           O contato do grupo (WhatsApp ou Discord) aparece aqui depois que o mestre aprovar você.
@@ -203,12 +223,16 @@ export default async function MissaoPage({ params }: PageProps<"/missoes/[id]">)
           <ul className="divide-y rounded-xl border bg-card">
             {approved.map((p) => (
               <li key={p.user_id} className="flex min-h-14 items-center justify-between gap-3 px-4 py-2">
-                <span className="font-medium">
-                  {p.profile.display_name}
+                <span>
+                  <Link href={`/perfil/${p.user_id}`} className="font-medium underline-offset-4 hover:underline">
+                    {p.profile.display_name}
+                  </Link>
                   {p.user_id === user.id && <span className="text-muted-foreground"> (você)</span>}
                 </span>
                 <span className="flex items-center gap-1">
-                  <LevelBadge level={p.profile.player_stats?.level} />
+                  {p.attended === true && <Badge className="bg-roxo text-pergaminho">Compareceu</Badge>}
+                  {p.attended === false && <Badge variant="destructive">Faltou</Badge>}
+                  {p.attended == null && <LevelBadge level={p.profile.player_stats?.level} />}
                   {isHost && isOpen && (
                     <RemoveParticipantButton sessionId={mission.id} userId={p.user_id} name={p.profile.display_name} />
                   )}

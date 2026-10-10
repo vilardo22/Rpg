@@ -55,3 +55,13 @@ Escolhas feitas onde o PRD era ambíguo ou silencioso. Aprovadas em 09/10/2026, 
 - **"Como chegar"** abre a rota no Google Maps pelas coordenadas (funciona no app de mapas do celular).
 - **Sugerir local (RF-04) é P1:** fica para depois do P0 completo. Por enquanto o seed já cria um local pendente para demonstrar a aprovação no painel admin (Fase 5).
 - **Tiles do OpenStreetMap** direto do servidor público: grátis e sem chave, adequado ao volume do projeto (a política de uso do OSM pede atribuição, que aparece no canto do mapa).
+
+## Fase 4 — concluir missão, ranking e perfil
+
+- **Concluir missão:** todos os aprovados começam marcados como presentes; o mestre desmarca quem faltou e confirma num diálogo que lista as faltas. O XP é todo calculado por `complete_session` no banco.
+- **"Criar a próxima"** (missão semanal concluída) abre o formulário já preenchido com a data +7 dias (`/missoes/nova?copiar=<id>`). Se o mestre concluir com atraso, a data pula para a próxima semana que ainda está no futuro. Só o mestre da missão pode copiar.
+- **Selo de reputação** = o nível conquistado (ex.: "Nível 4 · Mestre"), exibido no perfil. O selo "Em análise" continua visível só para o mestre ao avaliar pedidos (RF-06).
+- **Presença visível** na missão concluída ("Compareceu"/"Faltou"), coerente com o contador de faltas que o PRD pede no perfil.
+- **Experiência autodeclarada** fica nos metadados da conta (Supabase Auth), não no perfil público: é só uma preferência pessoal de filtro. Na lista de missões vira um atalho "Mostrar só missões para o meu nível", nunca um filtro aplicado sozinho. Ao salvar, o token de login é renovado para a mudança valer na hora.
+- **Avatar:** no MVP é a inicial do nome (sem upload de imagem), já que o PRD marca o avatar como opcional.
+- **Seed:** a missão em andamento ("Ordem Paranormal") agora é semanal, para o vídeo mostrar a conclusão e o "Criar a próxima".

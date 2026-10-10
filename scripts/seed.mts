@@ -271,8 +271,8 @@ async function seed() {
   // Missão que já começou: para demonstrar "concluir missão" no vídeo (PRD seção 11).
   const ordem = await createSession({
     host: "aria", title: "Ordem Paranormal — capítulo 3", game_type: "rpg", system_name: "Ordem Paranormal",
-    starts_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(), max_players: 4,
-    description: "Continuação da campanha online. Missão em andamento para demonstrar a conclusão.",
+    starts_at: new Date(Date.now() - 60 * 60 * 1000).toISOString(), max_players: 4, recurrence: "weekly",
+    description: "Campanha semanal online. Missão em andamento para demonstrar a conclusão e o \"Criar a próxima\".",
     contact: "https://discord.gg/exemplo-ordem", online: "https://discord.gg/exemplo-ordem-mesa",
   });
 

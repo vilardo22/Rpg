@@ -11,7 +11,13 @@ export const getCurrentUser = cache(async () => {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   if (!data?.claims) return null;
-  return { id: data.claims.sub, email: data.claims.email as string | undefined };
+  const metadata = (data.claims.user_metadata ?? {}) as { experience_level?: number | null };
+  return {
+    id: data.claims.sub,
+    email: data.claims.email as string | undefined,
+    /** Experiência autodeclarada (1–4), só preferência de filtro. Null se não informou. */
+    experienceLevel: metadata.experience_level ?? null,
+  };
 });
 
 /** Para páginas e actions que exigem login: devolve o usuário ou manda para /entrar. */

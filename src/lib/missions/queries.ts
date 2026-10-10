@@ -41,6 +41,8 @@ export type MissionSummary = {
 export type Participant = {
   user_id: string;
   status: ParticipantStatus;
+  /** Preenchido ao concluir a missão: compareceu (true) ou faltou (false). */
+  attended: boolean | null;
   created_at: string;
   profile: {
     display_name: string;
@@ -142,7 +144,7 @@ export const getMission = cache(async (id: string): Promise<MissionDetail | null
        venue:venues ( id, name, address ),
        contacts:session_contacts ( contact_url, online_url ),
        participants:session_participants (
-         user_id, status, created_at,
+         user_id, status, attended, created_at,
          profile:profiles ( display_name, player_stats ( level, sessions_played, no_shows ) )
        )`,
     )
