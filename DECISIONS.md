@@ -74,3 +74,13 @@ Escolhas feitas onde o PRD era ambíguo ou silencioso. Aprovadas em 09/10/2026, 
 - **Notificações** (P1, previstas nesta fase pelo plano): todo o P0 já estava pronto. Tocar num aviso marca como lido e abre a tela relacionada; contador de não lidos na navegação. Os avisos são criados pelas funções do banco (pedido recebido, aprovado/recusado, vaga liberada, missão cancelada, missão concluída).
 - **Página 404 em português** para o app inteiro (a padrão do Next é em inglês).
 - **Seed** inclui uma denúncia aberta (fictícia) para o painel admin ter o que revisar no vídeo.
+
+## Fase 6 — polimento e deploy
+
+- **Home pública (RF-09, P1):** prévia das próximas missões e dos locais para visitantes. Como o RLS não deixa visitantes lerem nada, a prévia é buscada no servidor com a secret key, escolhendo **só colunas públicas** (título, data, tipo de jogo, nome do local); nada de contato, participantes ou nomes de usuários. A página é gerada e guardada por 5 minutos (`revalidate = 300`). Se a consulta falhar, a home abre sem a prévia.
+- **Quem já está logado** e abre `/` vai direto para `/missoes`.
+- **`shadcn` virou devDependency:** é a ferramenta que gera componentes (só o CSS dela é usado no build). As 7 vulnerabilidades "high" do `npm audit` vinham dela; em produção agora são 0.
+- **Contraste conferido (WCAG AA)** para todos os pares de cor de texto. O dourado sobre o pergaminho (1,98:1) só é usado em ícones decorativos ao lado de texto; o "404" que usava essa combinação passou para roxo.
+- **"Pular para o conteúdo"** é o primeiro item do Tab nas telas logadas.
+- **Servidor em São Paulo** (`vercel.json` → `gru1`), perto do Supabase.
+- **Lista de espera por e-mail (P2)** não foi feita.

@@ -46,7 +46,7 @@ No painel do Supabase, abra **Project Settings > API Keys** e copie para o `.env
 ```
 src/
   app/
-    page.tsx          home pública
+    page.tsx          home pública (prévia de missões e locais)
     (auth)/           cadastro, login e as Server Actions de autenticação
     (app)/            telas logadas com cabeçalho + navegação inferior
     manifest.ts       manifesto PWA
@@ -105,3 +105,17 @@ update public.profiles
 set role = 'admin'
 where id = (select id from auth.users where email = 'seu-email@exemplo.com');
 ```
+
+## Deploy (Vercel)
+
+1. **GitHub:** crie um repositório (privado) e envie o código: `git remote add origin <url>` e `git push -u origin main`.
+2. **Vercel:** em [vercel.com/new](https://vercel.com/new), importe o repositório. O framework (Next.js) é detectado sozinho.
+3. Antes de clicar em **Deploy**, abra **Environment Variables** e cadastre as 3 variáveis do `.env.local` (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`).
+4. **Deploy.** A cada `git push` na `main`, a Vercel publica de novo sozinha.
+5. **Supabase → Authentication → URL Configuration:** em **Site URL** coloque a URL da Vercel (`https://<projeto>.vercel.app`) e adicione a mesma em **Redirect URLs**.
+
+O `vercel.json` faz o servidor rodar em São Paulo (`gru1`), perto do banco do Supabase: cada consulta fica bem mais rápida do que nos EUA (padrão da Vercel).
+
+## Demonstração
+
+Roteiro do vídeo, contas e cenas em [`docs/ROTEIRO_DEMO.md`](docs/ROTEIRO_DEMO.md).

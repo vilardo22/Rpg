@@ -4,14 +4,14 @@ import { supabasePublishableKey, supabaseUrl } from "@/lib/env";
 
 /** Rotas abertas para quem não está logado. Todo o resto exige login. */
 const PUBLIC_PATHS = ["/", "/entrar", "/cadastro"];
-/** Rotas que não fazem sentido para quem já está logado. */
-const AUTH_PATHS = ["/entrar", "/cadastro"];
+/** Rotas que não fazem sentido para quem já está logado (a home pública inclusive). */
+const AUTH_PATHS = ["/", "/entrar", "/cadastro"];
 
 /**
  * Roda antes de cada página (via src/proxy.ts):
  * 1. renova o token de sessão do Supabase e grava os cookies atualizados;
  * 2. manda quem não está logado para /entrar (guardando a página pedida em ?next=);
- * 3. manda quem já está logado de /entrar e /cadastro para /missoes.
+ * 3. manda quem já está logado de /, /entrar e /cadastro para /missoes.
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
