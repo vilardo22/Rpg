@@ -309,6 +309,17 @@ async function seed() {
     "concluir Gloomhaven",
   );
 
+  // Uma denúncia aberta, para o painel admin ter o que revisar na demonstração.
+  check(
+    await as.celi.rpc("submit_report", {
+      p_target_user_id: ids.duda,
+      p_target_session_id: null,
+      p_reason: "Não compareceu ou sumiu",
+      p_details: "Confirmou presença no Gloomhaven e não apareceu nem avisou. (dado fictício)",
+    }),
+    "denúncia demo",
+  );
+
   console.log("\nSeed concluído. Contas de demonstração (senha para todas: " + PASSWORD + "):");
   for (const u of USERS) console.log(`  ${emails[u.key].padEnd(28)} ${u.name}${"admin" in u ? "  [admin]" : ""}`);
 }

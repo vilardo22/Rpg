@@ -65,3 +65,12 @@ Escolhas feitas onde o PRD era ambíguo ou silencioso. Aprovadas em 09/10/2026, 
 - **Experiência autodeclarada** fica nos metadados da conta (Supabase Auth), não no perfil público: é só uma preferência pessoal de filtro. Na lista de missões vira um atalho "Mostrar só missões para o meu nível", nunca um filtro aplicado sozinho. Ao salvar, o token de login é renovado para a mudança valer na hora.
 - **Avatar:** no MVP é a inicial do nome (sem upload de imagem), já que o PRD marca o avatar como opcional.
 - **Seed:** a missão em andamento ("Ordem Paranormal") agora é semanal, para o vídeo mostrar a conclusão e o "Criar a próxima".
+
+## Fase 5 — denúncias, admin e notificações
+
+- **Denúncia** de perfil (de outra pessoa) ou de missão (quem não é o mestre), com motivo de uma lista fixa e detalhes opcionais. "Outro" exige explicar. Quem é denunciado não é avisado e não vê quem denunciou.
+- **Painel `/admin`** protegido no servidor: quem não é admin recebe "Página não encontrada" (não revela que a rota existe). O link "Admin" só aparece no cabeçalho para admins. As funções do banco conferem `is_admin()` de novo.
+- **Aba Usuários** é somente leitura e mostra só dados públicos + nº de denúncias abertas; e-mail, CPF, nascimento e telefone ficam de fora.
+- **Notificações** (P1, previstas nesta fase pelo plano): todo o P0 já estava pronto. Tocar num aviso marca como lido e abre a tela relacionada; contador de não lidos na navegação. Os avisos são criados pelas funções do banco (pedido recebido, aprovado/recusado, vaga liberada, missão cancelada, missão concluída).
+- **Página 404 em português** para o app inteiro (a padrão do Next é em inglês).
+- **Seed** inclui uma denúncia aberta (fictícia) para o painel admin ter o que revisar no vídeo.

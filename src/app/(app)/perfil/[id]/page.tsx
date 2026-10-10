@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarCheck, Crown, Dices, Pencil, Swords, Trophy, UserX } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
+import { ReportButton } from "@/components/report/report-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { requireUser } from "@/lib/auth";
@@ -176,6 +177,8 @@ export default async function PerfilPublicoPage({ params }: PageProps<"/perfil/[
           </ul>
         )}
       </section>
+
+      {!isMe && <ReportButton target={{ userId: profile.id }} label={profile.display_name} />}
     </article>
   );
 }

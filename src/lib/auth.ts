@@ -1,6 +1,6 @@
 import "server-only";
 import { cache } from "react";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -27,3 +27,21 @@ export async function requireUser() {
   return user;
 }
 
+/** O usuário logado é admin? (coluna role do perfil; o usuário não consegue alterá-la). */
+export const isAdmin = cache(async (): Promise<boolean> => {
+  const user = await getCurrentUser();
+  if (!user) return false;
+  const supabase = await createClient();
+  const { data } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  return data?.role === "admin";
+});
+
+/**
+ * Para o painel /admin (RF-08): quem não é admin recebe "página não encontrada",
+ * sem nem confirmar que a rota existe. As funções do banco conferem de novo.
+ */
+export async function requireAdmin() {
+  const user = await requireUser();
+  if (!(await isAdmin())) notFound();
+  return user;
+}

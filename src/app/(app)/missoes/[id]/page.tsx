@@ -8,6 +8,7 @@ import { requireUser } from "@/lib/auth";
 import { formatDuration, formatPrice, formatSessionDateLong } from "@/lib/format";
 import { levelName } from "@/lib/missions/labels";
 import { getMission, getMyLevel, underReviewUsers } from "@/lib/missions/queries";
+import { ReportButton } from "@/components/report/report-button";
 import { Badge } from "@/components/ui/badge";
 import { CompleteMission } from "./complete-mission";
 import { CancelMissionButton, JoinRequests, RemoveParticipantButton } from "./host-actions";
@@ -244,6 +245,7 @@ export default async function MissaoPage({ params }: PageProps<"/missoes/[id]">)
       </section>
 
       {isHost && isOpen && <CancelMissionButton sessionId={mission.id} />}
+      {!isHost && <ReportButton target={{ sessionId: mission.id }} label={`"${mission.title}"`} />}
     </article>
   );
 }

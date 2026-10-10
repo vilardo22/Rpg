@@ -22,7 +22,7 @@ function activeHref(pathname: string): string | undefined {
 }
 
 /** Navegação inferior fixa do celular (PRD seção 6). */
-export function BottomNav() {
+export function BottomNav({ unread = 0 }: { unread?: number }) {
   const active = activeHref(usePathname());
 
   return (
@@ -44,8 +44,17 @@ export function BottomNav() {
                   isActive ? "text-dourado" : "text-pergaminho/80 hover:text-pergaminho",
                 )}
               >
-                <Icon aria-hidden className="size-6" />
+                <span className="relative">
+                  <Icon aria-hidden className="size-6" />
+                  {href === "/notificacoes" && unread > 0 && (
+                    // Contador de avisos não lidos (RF-07).
+                    <span className="absolute -top-1.5 -right-2.5 flex min-w-5 items-center justify-center rounded-full bg-dourado px-1 text-[0.7rem] leading-5 font-bold text-roxo-escuro">
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
+                </span>
                 {label}
+                {href === "/notificacoes" && unread > 0 && <span className="sr-only">({unread} não lidos)</span>}
               </Link>
             </li>
           );

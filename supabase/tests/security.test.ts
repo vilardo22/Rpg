@@ -216,3 +216,31 @@ describe("denúncias (RF-06)", () => {
     ).rejects.toThrow(/permission denied/);
   });
 });
+
+describe("notificações (RF-07)", () => {
+  it("cada um vê e marca como lidas só as próprias; não dá para alterar o texto", async () => {
+    const host = await createUser(db, "Fabi");
+    const player = await createUser(db, "Gui");
+    const session = await createSession(db, host);
+    await asUser(db, player, "select public.request_join($1)", [session]);
+
+    const [notif] = await asUser<{ id: string }>(db, host, "select id from public.notifications");
+    expect(notif).toBeDefined();
+    expect(await asUser(db, player, "select id from public.notifications where id = $1", [notif.id])).toEqual([]);
+
+    await asUser(db, player, "update public.notifications set read_at = now() where id = $1", [notif.id]);
+    const [stillUnread] = await asSystem(db, "select read_at from public.notifications where id = $1", [notif.id]);
+    expect(stillUnread).toEqual({ read_at: null });
+
+    await asUser(db, host, "update public.notifications set read_at = now() where id = $1", [notif.id]);
+    const [read] = await asSystem<{ read_at: string | null }>(db, "select read_at from public.notifications where id = $1", [notif.id]);
+    expect(read.read_at).not.toBeNull();
+
+    await expect(
+      asUser(db, host, "update public.notifications set title = 'hack' where id = $1", [notif.id]),
+    ).rejects.toThrow(/permission denied/);
+    await expect(
+      asUser(db, host, "insert into public.notifications (user_id, type, title) values ($1, 'x', 'falsa')", [player]),
+    ).rejects.toThrow(/permission denied/);
+  });
+});
