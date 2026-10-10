@@ -35,3 +35,13 @@ Escolhas feitas onde o PRD era ambíguo ou silencioso. Aprovadas em 09/10/2026, 
 - **Rejeitar local:** sem missões, é apagado; com missões, só deixa de ser verificado.
 - **Testes do banco com PGlite**, um Postgres que roda dentro do Node, já que não há Docker. Um arquivo imita o Supabase (`supabase/tests/supabase-stub.sql`).
 - **Node 22.18+**, porque o seed é TypeScript executado direto pelo Node.
+
+## Fase 2 — missões
+
+- **Aba "Minhas"** na lista: missões que eu organizo ou em que pedi vaga, incluindo as que começaram há menos de 1 dia (é por ela que o mestre volta à missão para concluir). A aba "Todas" mostra só missões abertas e futuras.
+- **Filtro de nível** = "meu nível": esconde missões cujo nível recomendado é maior que o escolhido.
+- **Filtros na URL** (`/missoes?jogo=rpg&modalidade=online`): dá para compartilhar o link filtrado; paginação de 20 em 20.
+- **Contato obrigatório** ao criar missão (WhatsApp com DDD ou convite do Discord): sem ele o grupo não teria como se falar depois da aprovação.
+- **Mestre pode remover um aprovado** (botão "Remover", com confirmação) e **cancelar a missão** inteira.
+- **Nomes dos níveis** ficam em `src/lib/missions/labels.ts` só para exibição; quem calcula o nível é o banco (tabela `levels`). Se renomear um nível no banco, atualize lá também.
+- **Links para o perfil** dos jogadores entram na Fase 4, junto com a página de perfil.

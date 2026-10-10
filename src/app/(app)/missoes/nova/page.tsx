@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/empty-state";
+import { listVerifiedVenues } from "@/lib/missions/queries";
+import { MissionForm } from "./mission-form";
 
 export const metadata: Metadata = { title: "Criar missão" };
 
-// Provisório (Fase 0): o formulário chega na Fase 2.
-export default function NovaMissaoPage() {
+export default async function NovaMissaoPage() {
+  const venues = await listVerifiedVenues();
+
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-semibold">Criar missão</h1>
-      <EmptyState
-        title="Em construção"
-        description="Logo você vai poder criar mesas e torneios por aqui."
-      />
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold">Criar missão</h1>
+        <p className="text-sm text-muted-foreground">Você será o mestre: aprova quem entra e conclui a missão.</p>
+      </div>
+      <MissionForm venues={venues} />
     </section>
   );
 }
