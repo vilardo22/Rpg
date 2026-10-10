@@ -22,7 +22,10 @@ export function SignUpForm() {
     formState: { errors },
   } = useForm<SignUpInput, unknown, SignUpData>({
     resolver: zodResolver(signUpSchema),
-    mode: "onTouched", // mostra o erro quando a pessoa sai do campo, não a cada tecla
+    // Valida ao enviar e, depois, a cada correção. Validar ao sair do campo fazia a
+    // mensagem de erro empurrar o formulário bem na hora do clique seguinte.
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     defaultValues: {
       displayName: "",
       email: "",

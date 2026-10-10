@@ -11,7 +11,7 @@ Escolhas feitas onde o PRD era ambíguo ou silencioso. Aprovadas em 09/10/2026, 
 5. **Nível mínimo.** É só um aviso ao pedir entrada; não bloqueia o pedido.
 6. **Contato.** O mestre informa um celular (o app gera `https://wa.me/55<numero>`) ou cola um link do Discord.
 7. **Prompt x PRD.** O guia de prompts cita denúncia de *local*, *horários* do local e notificação de *XP ganho*. Nada disso está no PRD, então não entra: denúncia é só de usuário ou missão.
-8. **Seed.** Os usuários fictícios precisam existir no Supabase Auth, então o seed é `scripts/seed.ts` (usa a secret key, roda localmente) e não `seed.sql`.
+8. **Seed.** Os usuários fictícios precisam existir no Supabase Auth, então o seed é `scripts/seed.mts` (usa a secret key, roda localmente) e não `seed.sql`.
 
 ## Técnicas
 
